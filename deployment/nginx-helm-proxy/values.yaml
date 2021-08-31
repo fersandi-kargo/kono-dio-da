@@ -1,0 +1,157 @@
+app:
+  # The name must be filled
+  nameOverride: ""
+  fullnameOverride: ""
+
+  labels:
+    version: stable
+    environment: dev
+
+  podLabels: {}
+    # use-kargo-permission: true
+
+  pdb:
+    minAvailable: 1
+
+  containerPort: 80
+  # Protocol selection for istio. Reference: https://istio.io/latest/docs/ops/configuration/traffic-management/protocol-selection/
+  containerProtocol: http
+
+  # To handle app container hooks
+  containerLifecycle:
+    preStop:
+      exec:
+        # Execute delay before sending SIGTERM to container. To prevent istio-proxy DNS caching problem.
+        command: ["/bin/sh","-c","echo Starting preStop hook... && sleep 7"]
+
+  # Grace Period during pod termination
+  terminationGracePeriodSeconds: 60
+
+  # Define Environment variables for the service
+  extraEnvs: {}
+  envFromSecret: ""
+
+  # livenessProbe:
+  #   httpGet:
+  #     path: /
+  #     port: 80
+
+  # readinessProbe:
+  #   httpGet:
+  #     path: /
+  #     port: 80
+
+  replicaCount: 1
+
+  updateStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 100%
+    #   maxSurge: 100%
+
+  service:
+    enabled: false
+    type: ClusterIP
+    # annotations:
+    #   kubernetes.io/ingress.global-static-ip-name: helloweb-ip
+    ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http-{{ include "app.fullname" . }}
+    # loadBalancerIP: "1.2.3.4"
+
+  files: {}
+    # config.json: |-
+    #   {"name": "agung pratama", "email": "agung@kargo.tech"}
+    # config.yaml: |-
+    #   name: "Agung Pratama"
+    #   email: "agung@kargo.tech"
+
+  filesMountPath: /etc/config/
+
+  image:
+    repository: nginx
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+    
+    args: []
+    command: []
+
+  imagePullSecrets: []
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+    # prometheus.io/path: /metrics
+    # prometheus.io/port: "80"
+    # prometheus.io/scrape: "true"
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # Creates PVC and mount it to the deployment.
+  # Only one pod can mount the volume, downtime between deployment needed.
+  persistentVolumeClaim:
+    enabled: false
+    # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+    accessMode: ReadWriteOnce
+    storageRequest: 10Gi
+    # Path for the pods to mount
+    mountPath: /etc/opt
+
+  extraVolumes: []
+  # - name: task-pv-storage
+  #   persistentVolumeClaim:
+  #     claimName: pv-claim-demo
+
+  extraVolumeMounts: []
+  # - mountPath: "/usr/share/nginx/html"
+  #   name: task-pv-storage
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  sidecars: []
+  # - name: nginx
+  #   image: nginx
+  # - name: ubuntu
+  #   image: ubuntu

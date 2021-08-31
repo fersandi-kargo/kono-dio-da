@@ -31,3 +31,28 @@ spec:
       name: helm-plugin
     repoURL: https://github.com/fersandi-kargo/kono-dio-da
 ---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-helm
+  namespace: argocd
+spec:
+  destination:
+    namespace: ariz
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+  source:
+    path: deployment/nginx-helm-proxy
+    repoURL: https://github.com/fersandi-kargo/kono-dio-da
+    helm:
+      # Release name override (defaults to application name)
+      releaseName: nginx-helm-stable
+
+      # Helm values files for overriding values in the helm chart
+      # The path is relative to the spec.source.path directory defined above
+      valueFiles:
+      - values.yaml
