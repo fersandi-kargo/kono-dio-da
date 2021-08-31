@@ -9,9 +9,6 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - Validate=true
       - CreateNamespace=true
@@ -20,14 +17,17 @@ spec:
     plugin:
       env:
         - name:  REPO_NAME
-          value: "bitnami"
+          value: "icarus"
         - name:  REPO_URL
-          value: "https://charts.bitnami.com/bitnami"
+          value: "https://kargotech.github.io/icarus"
         - name:  CHART_NAME
-          value: "nginx"
+          value: "app"
         - name:  CHART_VERSION
-          value: "9.5.2"
+          value: "0.1.6"
         - name:  COMMAND
           value: "--values values.yaml"
+        - name: ARGOCD_APP_NAME
+          value: "nginx-stable"
       name: helm-plugin
     repoURL: https://github.com/fersandi-kargo/kono-dio-da
+---
