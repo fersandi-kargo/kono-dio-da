@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd
+spec:
+  destination:
+    namespace: ariz
+    server: https://kubernetes.default.svc
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+  source:
+    path: deployment/nginx
+    plugin:
+      env:
+        - name:  REPO_NAME
+          value: "bitnami"
+        - name:  REPO_URL
+          value: "https://charts.bitnami.com/bitnami"
+        - name:  CHART_NAME
+          value: "nginx"
+        - name:  CHART_VERSION
+          value: "9.5.2"
+        - name:  COMMAND
+          value: "--values values.yaml"
+      name: helm-plugin
+    repoURL: https://github.com/fersandi-kargo/kono-dio-da
