@@ -3502,7 +3502,7 @@ spec:
           capabilities:
             drop:
             - all
-          readOnlyRootFilesystem: false
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
         volumeMounts:
         - mountPath: /app/config/ssh
