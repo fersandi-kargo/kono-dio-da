@@ -156,7 +156,7 @@ app:
   # - name: ubuntu
   #   image: ubuntu
 app-network:
-  nameOverride: "dev-nginx"
+  nameOverride: ""
 
   labels:
     environment: dev

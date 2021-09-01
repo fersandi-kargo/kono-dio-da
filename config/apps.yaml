@@ -23,3 +23,11 @@ spec:
       # The path is relative to the spec.source.path directory defined above
       valueFiles:
       - values.yaml
+
+      values:
+        app:
+          nameOverride: nginx
+          labels:
+            version: stable
+        app-network:
+          nameOverride: nginx
