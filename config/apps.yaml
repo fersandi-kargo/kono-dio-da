@@ -1,44 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx
-  namespace: argocd
-spec:
-  destination:
-    namespace: ariz
-    server: https://kubernetes.default.svc
-  project: default
-  syncPolicy:
-    syncOptions:
-      - Validate=true
-      - CreateNamespace=true
-  source:
-    path: deployment/nginx
-    plugin:
-      env:
-        - name:  REPO_NAME
-          value: "icarus"
-        - name:  REPO_URL
-          value: "https://kargotech.github.io/icarus"
-        - name:  CHART_NAME
-          value: "app"
-        - name:  CHART_VERSION
-          value: "0.1.6"
-        - name:  COMMAND
-          value: "--values values.yaml"
-        - name: ARGOCD_APP_NAME
-          value: "nginx-stable"
-      name: helm-plugin
-    repoURL: https://github.com/fersandi-kargo/kono-dio-da
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
   name: nginx-helm
   namespace: argocd
 spec:
   destination:
-    namespace: ariz
+    namespace: sandi
     server: https://kubernetes.default.svc
   project: default
   syncPolicy:

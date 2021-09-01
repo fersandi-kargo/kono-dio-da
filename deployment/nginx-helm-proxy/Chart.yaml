@@ -26,3 +26,7 @@ dependencies:
 - name: app
   version: "0.1.6"
   repository: https://kargotech.github.io/icarus
+  alias: app
+- name: network
+  version: "0.1.6"
+  repository: https://kargotech.github.io/icarus

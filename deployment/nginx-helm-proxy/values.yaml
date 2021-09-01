@@ -155,3 +155,57 @@ app:
   #   image: nginx
   # - name: ubuntu
   #   image: ubuntu
+network:
+  nameOverride: ""
+
+  labels:
+    environment: dev
+
+  service:
+    type: ClusterIP
+    ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http-{{ include "app-network.name" . }}
+
+  istio:
+    destinationRule:
+      subsets:
+      - name: stable
+        labels:
+          version: stable
+      - name: canary
+        labels:
+          version: canary
+    virtualServices:
+      public:
+        hosts:
+        - api-dev.app-dev.kargo.tech
+        gateways:
+        - istio-system/global
+        http:
+        - match:
+          - uri:
+              prefix: /nginx/
+          rewrite:
+            uri: /
+          route: &routes
+          - destination:
+              host: "{{ include \"app-network.name\" $ }}.{{ .Release.Namespace }}.svc.cluster.local"
+              subset: stable
+            weight: 100
+          - destination:
+              host: "{{ include \"app-network.name\" $ }}.{{ .Release.Namespace }}.svc.cluster.local"
+              subset: canary
+            weight: 0
+      internal:
+        hosts:
+          - "{{ include \"app-network.name\" $ }}.{{ .Release.Namespace }}.svc.cluster.local"
+        gateways:
+          - mesh
+        http:
+        - match:
+          - uri:
+              prefix: /
+          route: *routes
