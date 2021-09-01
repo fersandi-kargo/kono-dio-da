@@ -155,7 +155,7 @@ app:
   #   image: nginx
   # - name: ubuntu
   #   image: ubuntu
-network:
+app-network:
   nameOverride: ""
 
   labels:
